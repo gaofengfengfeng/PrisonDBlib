@@ -9,6 +9,13 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+        <!-- javalib依赖-->
+        <dependency>
+            <groupId>com.gaofeng.meta</groupId>
+            <artifactId>javalib</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
         <!-- mybatis所需包依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

@@ -62,3 +62,16 @@ CREATE TABLE `prisoner_family`(
   KEY `idx_username` (`username`),
   KEY `idx_phone` (`phone`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='犯人家属用户信息表';
+
+CREATE TABLE `prisoner_family_relationship`(
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `prisonerId` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '罪犯id',
+  `prisonerFamilyId` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '犯属id',
+  `relationship` varchar(16) NOT NULL DEFAULT '' COMMENT '犯人犯属关系',
+  `createTime` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE
+  CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_prisoner_id` (`prisonerId`),
+  KEY `idx_prisoner_family_id` (`prisonerFamilyId`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='犯人犯属关系表';
