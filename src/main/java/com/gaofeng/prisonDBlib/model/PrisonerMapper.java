@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @Author: gaofeng
  * @Date: 2018-08-21
@@ -33,4 +35,7 @@ public interface PrisonerMapper {
 
     @Select("SELECT * FROM prisoner WHERE prisonerCodeNum=#{prisonerCodeNum}")
     Prisoner findByPrisonerCodeNum(String prisonerCodeNum);
+
+    @Select("SELECT * FROM prisoner WHERE prisonerName=#{prisonerName}")
+    List<Prisoner> findByPrisonerName(String prisonerName);
 }
