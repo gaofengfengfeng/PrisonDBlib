@@ -6,8 +6,17 @@ package com.gaofeng.prisonDBlib.beans.msgrecord;
  * @Description:
  */
 public class Message {
+    private Long recordId;
     private Integer messageType;
     private String content;
+
+    public Long getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Long recordId) {
+        this.recordId = recordId;
+    }
 
     public Integer getMessageType() {
         return messageType;
@@ -28,7 +37,8 @@ public class Message {
     @Override
     public String toString() {
         return "Message{" +
-                "messageType=" + messageType +
+                "recordId=" + recordId +
+                ", messageType=" + messageType +
                 ", content='" + content + '\'' +
                 '}';
     }

@@ -89,7 +89,7 @@ public interface MessageRecordMapper {
      *
      * @return
      */
-    @Select("SELECT messageType, content FROM message_record where receiverId = #{receiverId} and" +
+    @Select("SELECT recordId, messageType, content FROM message_record where receiverId = #{receiverId} and" +
             " spokeId=#{spokeId} and sendType=#{sendType} and messageStatus=1")
     List<Message> selectByReceiverId(Map<String, Object> param);
 }
