@@ -37,7 +37,7 @@ public interface MessageRecordMapper {
      *
      * @return
      */
-    @Select("SELECT DISTINCT sendType FROM message_record")
+    @Select("SELECT DISTINCT sendType FROM message_record WHERE messageStatus=1")
     @Results({
             @Result(property = "sendType", column = "sendType"),
             @Result(property = "spokeMsgs", column = "sendType", javaType = List.class,
@@ -53,7 +53,8 @@ public interface MessageRecordMapper {
      *
      * @return
      */
-    @Select("SELECT DISTINCT spokeId, sendType FROM message_record where sendType = #{sendType}")
+    @Select("SELECT DISTINCT spokeId, sendType FROM message_record where sendType = #{sendType} " +
+            "AND messageStatus=1")
     @Results({
             @Result(property = "spokeId", column = "spokeId"),
             @Result(property = "receiverMsgs", column = "{spokeId=spokeId,sendType=sendType}",
@@ -70,8 +71,8 @@ public interface MessageRecordMapper {
      *
      * @return
      */
-    @Select("SELECT DISTINCT receiverId, spokeId, sendType FROM message_record where spokeId = " +
-            "#{spokeId} and sendType = #{sendType}")
+    @Select("SELECT DISTINCT receiverId, spokeId, sendType FROM message_record WHERE spokeId = " +
+            "#{spokeId} AND sendType = #{sendType} AND messageStatus=1")
     @Results({
             @Result(property = "receiverId", column = "receiverId"),
             @Result(property = "msgs", column = "{receiverId=receiverId, spokeId=spokeId, " +
@@ -89,7 +90,20 @@ public interface MessageRecordMapper {
      *
      * @return
      */
-    @Select("SELECT recordId, messageType, content FROM message_record where receiverId = #{receiverId} and" +
+    @Select("SELECT recordId, messageType, content FROM message_record where receiverId = " +
+            "#{receiverId} and" +
             " spokeId=#{spokeId} and sendType=#{sendType} and messageStatus=1")
     List<Message> selectByReceiverId(Map<String, Object> param);
+
+    @Update("<script>" +
+            " UPDATE message_record SET messageStatus=#{messageStatus} WHERE recordId IN (" +
+            "<foreach item='recordId' collection='recordIds' index='index' separator =','>" +
+            "#{recordId} " +
+            "</foreach>" + ")" +
+            "</script>")
+    Integer batchUpdateMessageStatusByRecordId(@Param("messageStatus") Integer messageStatus,
+                                               @Param("recordIds") List<Long> recordIds);
+
+    @Select("SELECT recordId FROM message_record where messageStatus=1")
+    List<Long> findWaitAuditRecords();
 }
