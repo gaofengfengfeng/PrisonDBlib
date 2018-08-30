@@ -1,4 +1,4 @@
-package com.gaofeng.prisonDBlib.beans.msgrecord;
+package com.gaofeng.prisonDBlib.beans.audit;
 
 import java.util.List;
 

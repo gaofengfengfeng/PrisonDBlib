@@ -1,9 +1,11 @@
 package com.gaofeng.prisonDBlib.model;
 
-import com.gaofeng.prisonDBlib.beans.msgrecord.Message;
-import com.gaofeng.prisonDBlib.beans.msgrecord.ReceiverMsg;
-import com.gaofeng.prisonDBlib.beans.msgrecord.SendType;
-import com.gaofeng.prisonDBlib.beans.msgrecord.SpokeMsg;
+import com.gaofeng.prisonDBlib.beans.audit.Message;
+import com.gaofeng.prisonDBlib.beans.audit.ReceiverMsg;
+import com.gaofeng.prisonDBlib.beans.audit.SendType;
+import com.gaofeng.prisonDBlib.beans.audit.SpokeMsg;
+import com.gaofeng.prisonDBlib.beans.msgrecord.WaitReadMsgDetail;
+import com.gaofeng.prisonDBlib.beans.msgrecord.WaitReadMsgs;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
@@ -106,4 +108,35 @@ public interface MessageRecordMapper {
 
     @Select("SELECT recordId FROM message_record where messageStatus=1")
     List<Long> findWaitAuditRecords();
+
+
+    /**
+     * 查找犯人、犯属待读消息
+     *
+     * @param receiverId
+     *
+     * @return
+     */
+    @Select("SELECT DISTINCT spokeId, receiverId FROM message_record where " +
+            "receiverId=#{receiverId} AND (messageStatus=3 OR messageStatus=4)")
+    @Results({
+            @Result(property = "spokeId", column = "spokeId"),
+            @Result(property = "waitReadMsgDetails", column = "{spokeId=spokeId, " +
+                    "receiverId=receiverId}", javaType = List.class,
+                    many = @Many(select = "com.gaofeng.prisonDBlib.model.MessageRecordMapper" +
+                            ".findWaitReadMsgDetail"))
+    })
+    List<WaitReadMsgs> findWaitReadMsgs(Long receiverId);
+
+    /**
+     * 查找犯人、犯属待读消息附属，查找某条消息的详细内容
+     *
+     * @param param
+     *
+     * @return
+     */
+    @Select("SELECT recordId, messageType, content, messageStatus, spokeId, receiverId FROM " +
+            "message_record WHERE spokeId=#{spokeId} AND receiverId=#{receiverId} AND " +
+            "(messageStatus=3 OR messageStatus=4)")
+    List<WaitReadMsgDetail> findWaitReadMsgDetail(Map<String, Object> param);
 }
