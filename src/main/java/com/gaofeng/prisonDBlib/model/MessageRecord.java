@@ -13,13 +13,16 @@ public class MessageRecord {
     private Integer sendType; // 消息类型 0:未使用 1:罪犯->犯属 2:犯属->罪犯 3:犯属->监狱 4:监狱->犯属
     private Integer messageType; // 消息类型 0:未使用 1:文本 2:图片 3:语音 4:视频
     private String content;
-    private Integer messageStatus; // 消息状态 0:未使用 1:等待审核 2:审核未通过 3:审核通过 4:已送达 5:已读
+    // 消息状态 0:未使用 1:等待审核 2:审核未通过 3:审核通过 4:已送达 5:已读 6:审核未通过结果送达 7:审核未通过结果已读
+    private Integer messageStatus;
     private Long policeId;
     private Long sendTime;
     private Long auditFailedTime;
     private Long auditPassTime;
     private Long receiveTime;
     private Long readTime;
+    private Long unpassResultReceiveTime;
+    private Long unpassResultReadTime;
     private Long createTime;
     private Long updateTime;
 
@@ -46,6 +49,8 @@ public class MessageRecord {
         public static final int AUDIT_PASS = 3;
         public static final int RECEIVED = 4;
         public static final int READ = 5;
+        public static final int UNPASS_RESULT_RECEIVED = 6;
+        public static final int UNPASS_RESULT_READ = 7;
     }
 
     public MessageRecord() {
@@ -63,6 +68,8 @@ public class MessageRecord {
         auditPassTime = 0L;
         receiveTime = 0L;
         readTime = 0L;
+        unpassResultReceiveTime = 0L;
+        unpassResultReadTime = 0L;
         createTime = System.currentTimeMillis();
         updateTime = null;
     }
@@ -195,6 +202,22 @@ public class MessageRecord {
         this.updateTime = updateTime;
     }
 
+    public Long getUnpassResultReceiveTime() {
+        return unpassResultReceiveTime;
+    }
+
+    public void setUnpassResultReceiveTime(Long unpassResultReceiveTime) {
+        this.unpassResultReceiveTime = unpassResultReceiveTime;
+    }
+
+    public Long getUnpassResultReadTime() {
+        return unpassResultReadTime;
+    }
+
+    public void setUnpassResultReadTime(Long unpassResultReadTime) {
+        this.unpassResultReadTime = unpassResultReadTime;
+    }
+
     @Override
     public String toString() {
         return "MessageRecord{" +
@@ -212,6 +235,8 @@ public class MessageRecord {
                 ", auditPassTime=" + auditPassTime +
                 ", receiveTime=" + receiveTime +
                 ", readTime=" + readTime +
+                ", unpassResultReceiveTime=" + unpassResultReceiveTime +
+                ", unpassResultReadTime=" + unpassResultReadTime +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
