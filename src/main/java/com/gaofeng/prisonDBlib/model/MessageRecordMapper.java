@@ -97,17 +97,54 @@ public interface MessageRecordMapper {
             " spokeId=#{spokeId} and sendType=#{sendType} and messageStatus=1")
     List<Message> selectByReceiverId(Map<String, Object> param);
 
+    /**
+     * 批量更新记录的状态以及相应更新时间 <if test= \"messageStatus " +
+     *             "== 3\"> ,auditPassTime=#{time} </if>
+     *
+     * @param messageStatus
+     * @param recordIds
+     * @param time
+     *
+     * @return
+     */
     @Update("<script>" +
-            " UPDATE message_record SET messageStatus=#{messageStatus} WHERE recordId IN (" +
+            " UPDATE message_record SET messageStatus=#{messageStatus} <choose> " +
+            "<when test=\" messageStatus==2\">" +
+            ",auditFailedTime=#{time}" +
+            "</when>" +
+            "<when test=\" messageStatus==3\">" +
+            ",auditPassTime=#{time}" +
+            "</when>" +
+            "<when test=\" messageStatus==4\">" +
+            ",receiveTime=#{time}" +
+            "</when>" +
+            "<when test=\" messageStatus==5\">" +
+            ",readTime=#{time}" +
+            "</when>" +
+            "<when test=\" messageStatus==6\">" +
+            ",unpassResultReceiveTime=#{time}" +
+            "</when>" +
+            "<when test=\" messageStatus==7\">" +
+            ",unpassResultReadTime=#{time}" +
+            "</when>" +
+            "</choose> WHERE recordId IN (" +
             "<foreach item='recordId' collection='recordIds' index='index' separator =','>" +
             "#{recordId} " +
             "</foreach>" + ")" +
             "</script>")
     Integer batchUpdateMessageStatusByRecordId(@Param("messageStatus") Integer messageStatus,
-                                               @Param("recordIds") List<Long> recordIds);
+                                               @Param("recordIds") List<Long> recordIds, @Param(
+            "time") Long time);
 
-    @Select("SELECT recordId FROM message_record where messageStatus=1")
-    List<Long> findWaitAuditRecords();
+    /**
+     * 根据单个消息状态，查找消息记录
+     *
+     * @param messageStatus
+     *
+     * @return
+     */
+    @Select("SELECT recordId FROM message_record where messageStatus=#{messageStatus}")
+    List<Long> findByMessageStatus(Integer messageStatus);
 
 
     /**
