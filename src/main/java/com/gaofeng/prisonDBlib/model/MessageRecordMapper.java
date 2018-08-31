@@ -139,4 +139,8 @@ public interface MessageRecordMapper {
             "message_record WHERE spokeId=#{spokeId} AND receiverId=#{receiverId} AND " +
             "(messageStatus=3 OR messageStatus=4)")
     List<WaitReadMsgDetail> findWaitReadMsgDetail(Map<String, Object> param);
+
+    @Select("SELECT recordId, messageType, content, messageStatus, spokeId, receiverId FROM " +
+            "message_record WHERE spokeId=#{spokeId} AND (messageStatus=2 OR messageStatus=6)")
+    List<WaitReadMsgDetail> findUnpassMsgs(Long spokeId);
 }
